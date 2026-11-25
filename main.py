@@ -74,12 +74,18 @@ def main(argv=None) -> None:
         action="store_true",
         help="validate commit.txt only, without writing entry.txt",
     )
+    parser.add_argument(
+        "--out",
+        default=None,
+        help="output directory for entry.txt "
+        "(default: $MAKEFUN_OUTPUT_DIR or /output)",
+    )
     args = parser.parse_args(argv)
     message = load_message()
     if args.check:
         print(f"ok: {len(message)} characters, one line")
         return
-    output_dir = os.environ.get("MAKEFUN_OUTPUT_DIR") or "/output"
+    output_dir = args.out or os.environ.get("MAKEFUN_OUTPUT_DIR") or "/output"
     os.makedirs(output_dir, exist_ok=True)
     path = os.path.join(output_dir, "entry.txt")
     # Atomic write: a crash mid-write must never leave a partial
